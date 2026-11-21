@@ -6,6 +6,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.print.PrintAttributes
+import android.print.PrintManager
 import android.webkit.JavascriptInterface
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
@@ -88,6 +90,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     inner class BackupBridge {
+        @JavascriptInterface
+        fun printPage() {
+            runOnUiThread {
+                val printManager = getSystemService(PRINT_SERVICE) as PrintManager
+                val adapter = webView.createPrintDocumentAdapter("Lkw-Spesen-Abrechnung")
+                printManager.print("Lkw-Spesen-Abrechnung", adapter, PrintAttributes.Builder().build())
+            }
+        }
+
         @JavascriptInterface
         fun saveBackup(json: String) {
             try {
