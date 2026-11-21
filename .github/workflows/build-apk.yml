@@ -22,8 +22,8 @@ jobs:
           gradle-version: "8.9"
       - name: Prepare WebView assets
         run: |
-          mkdir -p app/src/main/assets/assets
-          cp index.html app/src/main/assets/assets/index.html
+          mkdir -p app/src/main/assets
+          cp index.html app/src/main/assets/index.html
       - name: Build debug APK
         run: gradle --no-daemon assembleDebug
       - name: Upload APK
