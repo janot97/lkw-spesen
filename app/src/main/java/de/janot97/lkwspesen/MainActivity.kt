@@ -5,6 +5,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.graphics.Color
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import android.provider.MediaStore
 import android.print.PrintAttributes
 import android.print.PrintManager
@@ -36,7 +39,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         webView = WebView(this)
+        window.statusBarColor = Color.rgb(169, 20, 36)
+        webView.setBackgroundColor(Color.rgb(169, 20, 36))
         setContentView(webView)
+        ViewCompat.setOnApplyWindowInsetsListener(webView) { view, insets ->
+            val topInset = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            view.setPadding(0, topInset, 0, 0)
+            insets
+        }
+        ViewCompat.requestApplyInsets(webView)
 
         val assetLoader = WebViewAssetLoader.Builder()
             .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(this))
