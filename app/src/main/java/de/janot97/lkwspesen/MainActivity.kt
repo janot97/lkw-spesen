@@ -6,6 +6,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.graphics.Color
+import android.widget.FrameLayout
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import android.provider.MediaStore
@@ -38,16 +41,28 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val appRed = Color.rgb(169, 20, 36)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.statusBarColor = Color.TRANSPARENT
         webView = WebView(this)
-        window.statusBarColor = Color.rgb(169, 20, 36)
-        webView.setBackgroundColor(Color.rgb(169, 20, 36))
-        setContentView(webView)
-        ViewCompat.setOnApplyWindowInsetsListener(webView) { view, insets ->
-            val topInset = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
-            view.setPadding(0, topInset, 0, 0)
+        webView.setBackgroundColor(appRed)
+        val root = FrameLayout(this).apply {
+            setBackgroundColor(appRed)
+            addView(webView, FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            ))
+        }
+        setContentView(root)
+        WindowInsetsControllerCompat(window, root).isAppearanceLightStatusBars = false
+        ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
+            val bars = insets.getInsets(
+                WindowInsetsCompat.Type.statusBars() or WindowInsetsCompat.Type.navigationBars()
+            )
+            view.setPadding(0, bars.top, 0, bars.bottom)
             insets
         }
-        ViewCompat.requestApplyInsets(webView)
+        ViewCompat.requestApplyInsets(root)
 
         val assetLoader = WebViewAssetLoader.Builder()
             .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(this))
