@@ -20,10 +20,11 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.9"
-      - name: Prepare WebView assets
+      - name: Prepare WebView assets and launcher icon
         run: |
-          mkdir -p app/src/main/assets
+          mkdir -p app/src/main/assets app/src/main/res/drawable-nodpi
           cp index.html app/src/main/assets/index.html
+          base64 -d app-icon.png.b64 > app/src/main/res/drawable-nodpi/ic_launcher_image.png
       - name: Build debug APK
         run: gradle --no-daemon assembleDebug
       - name: Upload APK
